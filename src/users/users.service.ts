@@ -1,11 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { validate } from 'class-validator';
+import { PrismaService } from 'src/prisma.service';
+import { RabbitService } from 'src/rmq/rmq.service';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly rabbitService: RabbitService,
+  ) {}
+  async createUser(data: CreateUserDto) {
+    const errors = await validate(data);
+    const isContainsErrors = errors.length > 0;
+    if (isContainsErrors) {
+      throw new BadRequestException(errors);
+    }
+
+    const findUser = await this.prismaService.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (findUser) {
+      throw new BadRequestException('User already exists.');
+    }
+
+    const user = await this.prismaService.user.create({
+      data: data,
+    });
+
+    await this.rabbitService.sendMessage({ userId: user.id });
+
+    return { user };
   }
 
   findAll() {
@@ -14,10 +40,6 @@ export class UsersService {
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
   }
 
   remove(id: number) {
