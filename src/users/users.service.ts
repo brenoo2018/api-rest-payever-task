@@ -3,12 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { validate } from 'class-validator';
 import { PrismaService } from 'src/prisma.service';
 import { RabbitService } from 'src/rmq/rmq.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly rabbitService: RabbitService,
+    private readonly mailerService: MailerService,
   ) {}
   async createUser(data: CreateUserDto) {
     const errors = await validate(data);
@@ -30,6 +32,12 @@ export class UsersService {
     });
 
     await this.rabbitService.sendMessage({ userId: user.id });
+
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Welcome!',
+      context: { name: user.first_name },
+    });
 
     return { user };
   }
