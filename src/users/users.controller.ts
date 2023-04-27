@@ -11,17 +11,17 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Get('/users/:id')
+  @Get('/user/:id')
   findUserById(@Param('id') id: string) {
     return this.usersService.findUserById(+id);
   }
-  @Get('/users/:id/avatar')
+  @Get('/user/:id/avatar')
   getAvatar(@Param('id') id: string) {
     return this.usersService.getAvatar(+id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete('user/:id/avatar')
+  removeAvatar(@Param('id') id: string) {
+    return this.usersService.removeAvatar(+id);
   }
 }

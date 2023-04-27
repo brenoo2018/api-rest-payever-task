@@ -101,9 +101,7 @@ export class UsersService {
     console.log('hi 3');
     const url = `https://reqres.in/api/users/${userId}`;
 
-    const { data } = await this.httpService.axiosRef.get<ResponseFindUserById>(
-      url,
-    );
+    const { data } = await this.httpService.axiosRef.get(url);
 
     if (!data.data) {
       throw new BadRequestException('User not found.');
@@ -129,7 +127,22 @@ export class UsersService {
     return { base64: convertedBase64 };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async removeAvatar(userId: number) {
+    const filename = resolve('src', 'avatar', `${userId}.jpg`);
+    if (fs.existsSync(filename).valueOf()) {
+      fs.unlinkSync(filename);
+    }
+
+    const findAvatar = await this.prismaService.avatar.findFirst({
+      where: { userId: String(userId) },
+    });
+
+    if (!findAvatar) {
+      throw new BadRequestException('User not found.');
+    }
+
+    await this.prismaService.avatar.delete({
+      where: { id: findAvatar.id },
+    });
   }
 }
