@@ -4,6 +4,12 @@ import { validate } from 'class-validator';
 import { PrismaService } from 'src/prisma.service';
 import { RabbitService } from 'src/rmq/rmq.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { User } from '@prisma/client';
+import { HttpService } from '@nestjs/axios';
+
+interface ResponseFindUserById {
+  data: User;
+}
 
 @Injectable()
 export class UsersService {
@@ -11,6 +17,7 @@ export class UsersService {
     private readonly prismaService: PrismaService,
     private readonly rabbitService: RabbitService,
     private readonly mailerService: MailerService,
+    private httpService: HttpService,
   ) {}
   async createUser(data: CreateUserDto) {
     const errors = await validate(data);
@@ -42,8 +49,20 @@ export class UsersService {
     return { user };
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findUserById(userId: number): Promise<User> {
+    const url = `https://reqres.in/api/users/${userId}`;
+    try {
+      const { data } =
+        await this.httpService.axiosRef.get<ResponseFindUserById>(url);
+
+      if (!data.data) {
+      }
+      const user = data.data;
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException('User not found.');
+    }
   }
 
   findOne(id: number) {

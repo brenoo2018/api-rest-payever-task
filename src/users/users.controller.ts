@@ -15,18 +15,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('/users')
-  create(@Body() createUserDto: CreateUserDto) {
+  createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get('/users/:id')
+  findUserById(@Param('id') id: string) {
+    return this.usersService.findUserById(+id);
   }
 
   @Delete(':id')
