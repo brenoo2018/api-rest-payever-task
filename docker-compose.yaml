@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  mongodb-api-rest:
+    image: prismagraphql/mongo-single-replica:5.0.3
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=docker
+      - MONGO_INITDB_ROOT_PASSWORD=docker
+      - MONGO_INITDB_DATABASE=mydb
