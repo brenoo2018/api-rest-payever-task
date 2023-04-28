@@ -21,6 +21,7 @@ This API service was developed with the purpose of solving the challenge propose
 - Clone this repository (`git clone https://github.com/brenoo2018/api-rest-payever-task.git`)
 - Inside the folder, run: `yarn`
 - Populate the environment variables as it is in `.env.example`
+- Install docker on your machine (`https://docs.docker.com/get-docker/`)
 - Then run: `docker compose up -d`
 - Finally: `yarn start:dev`
 
