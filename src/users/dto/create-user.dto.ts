@@ -16,8 +16,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
   readonly email: string;
-
-  @IsOptional()
-  @IsString()
-  readonly avatar: string;
 }

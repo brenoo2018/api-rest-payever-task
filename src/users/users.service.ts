@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { validate } from 'class-validator';
-import { PrismaService } from 'src/prisma.service';
-import { RabbitService } from 'src/rmq/rmq.service';
+import { PrismaService } from '../prisma.service';
+import { RabbitService } from '../rmq/rmq.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { User } from '@prisma/client';
 import { HttpService } from '@nestjs/axios';
-import crypto, { randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import * as fs from 'node:fs';
 
@@ -52,7 +52,7 @@ export class UsersService {
       context: { name: user.first_name },
     });
 
-    return { user };
+    return user;
   }
 
   async findUserById(userId: number): Promise<User> {
