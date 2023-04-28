@@ -14,6 +14,7 @@ This API service was developed with the purpose of solving the challenge propose
 - Nestjs
 - mailer
 - Rabbitmq
+- Prisma
 - Mongodb
 
 ## Quick start
@@ -23,6 +24,7 @@ This API service was developed with the purpose of solving the challenge propose
 - Populate the environment variables as it is in `.env.example`
 - Install docker on your machine (`https://docs.docker.com/get-docker/`)
 - Then run: `docker compose up -d`
+- The run: `npx prisma generate`
 - Finally: `yarn start:dev`
 
 ## Routes
