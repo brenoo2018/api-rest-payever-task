@@ -5,11 +5,19 @@ import { PrismaService } from '../prisma.service';
 import { randomUUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
 
-const userEntityList: CreateUserDto = {
+interface UserAvatar {
+  base64: string;
+}
+
+const userDto: CreateUserDto = {
   id: randomUUID(),
   first_name: 'taynan',
   last_name: 'silva',
   email: 'thaynanbreno@gmail.com',
+};
+
+const userAvatar: UserAvatar = {
+  base64: Buffer.from('create-base64-string').toString('base64'),
 };
 
 describe('UsersController', () => {
@@ -23,9 +31,9 @@ describe('UsersController', () => {
         {
           provide: UsersService,
           useValue: {
-            createUser: jest.fn().mockResolvedValue(userEntityList),
-            findUserById: jest.fn().mockResolvedValue(userEntityList),
-            getAvatar: jest.fn(),
+            createUser: jest.fn().mockResolvedValue(userDto),
+            findUserById: jest.fn().mockResolvedValue(userDto),
+            getAvatar: jest.fn().mockResolvedValue(userAvatar),
             removeAvatar: jest.fn(),
           },
         },
@@ -61,7 +69,7 @@ describe('UsersController', () => {
       const result = await userController.createUser(newUser);
 
       //assert
-      expect(result).toEqual(userEntityList);
+      expect(result).toEqual(userDto);
       expect(typeof result).toEqual('object');
     });
 
@@ -73,6 +81,15 @@ describe('UsersController', () => {
       expect(result.first_name).toEqual(expect.any(String));
       expect(result.last_name).toEqual(expect.any(String));
       expect(result.email).toEqual(expect.any(String));
+      expect(typeof result).toEqual('object');
+    });
+
+    it(`it should be possible to fetch a user's avatar`, async () => {
+      //act
+      const result = await userController.getAvatar(String(2));
+
+      //assert
+      expect(result.base64).toEqual(expect.any(String));
       expect(typeof result).toEqual('object');
     });
   });
