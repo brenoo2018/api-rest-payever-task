@@ -24,7 +24,7 @@ describe('UsersController', () => {
           provide: UsersService,
           useValue: {
             createUser: jest.fn().mockResolvedValue(userEntityList),
-            findUserById: jest.fn(),
+            findUserById: jest.fn().mockResolvedValue(userEntityList),
             getAvatar: jest.fn(),
             removeAvatar: jest.fn(),
           },
@@ -62,6 +62,17 @@ describe('UsersController', () => {
 
       //assert
       expect(result).toEqual(userEntityList);
+      expect(typeof result).toEqual('object');
+    });
+
+    it('it should be possible to search for a user', async () => {
+      //act
+      const result = await userController.findUserById(String(2));
+
+      //assert
+      expect(result.first_name).toEqual(expect.any(String));
+      expect(result.last_name).toEqual(expect.any(String));
+      expect(result.email).toEqual(expect.any(String));
       expect(typeof result).toEqual('object');
     });
   });
