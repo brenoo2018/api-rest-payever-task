@@ -18,7 +18,7 @@ This API service was developed with the purpose of solving the challenge propose
 
 ## Quick start
 
-- Clone this repository (``)
+- Clone this repository (`git clone https://github.com/brenoo2018/api-rest-payever-task.git`)
 - Inside the folder, run: `yarn`
 - Populate the environment variables as it is in `.env.example`
 - Then run: `docker compose up -d`
