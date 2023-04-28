@@ -60,6 +60,7 @@ export class UsersService {
     try {
       const { data } =
         await this.httpService.axiosRef.get<ResponseFindUserById>(url);
+      console.log('🚀  data:', data);
 
       if (!data.data) {
         throw new BadRequestException('User not found.');
@@ -68,6 +69,7 @@ export class UsersService {
 
       return user;
     } catch (error) {
+      console.log('🚀 ~  error:', error);
       throw new BadRequestException('User not found.');
     }
   }
