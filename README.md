@@ -38,7 +38,7 @@ This API service was developed with the purpose of solving the challenge propose
 
 ## Tests
 
-- `yarn test` to run all tests
+- `yarn test` to run all unitary tests
 
 ## Acknowledgements
 
