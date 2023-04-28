@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HttpModule } from '@nestjs/axios';
+import 'dotenv/config';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       },
     }),
     UsersModule,
+    HttpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
