@@ -44,13 +44,18 @@ export class UsersService {
       },
     });
 
-    await this.rabbitService.sendMessage({ userId: user.id });
+    await this.rabbitService.sendMessage({
+      message: 'a new user has registered',
+      userId: user.id,
+    });
 
     await this.mailerService.sendMail({
       to: user.email,
       subject: 'Welcome!',
       context: { name: user.first_name },
     });
+
+    // await this.rabbitService.getMessage();
 
     return user;
   }

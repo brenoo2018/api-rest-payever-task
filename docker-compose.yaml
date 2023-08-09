@@ -1,23 +1,57 @@
 version: '3'
 
 services:
-  mongodb-api-rest:
-    image: prismagraphql/mongo-single-replica:5.0.3
+  mongodb:
+    image: bitnami/mongodb:latest
+    container_name: mongodb
     ports:
-      - 27017:27017
+      - '27017:27017'
+    volumes:
+      - ./mongo-config.conf:/etc/mongo/mongo-config.conf
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=docker
-      - MONGO_INITDB_ROOT_PASSWORD=docker
-      - MONGO_INITDB_DATABASE=mydb
+      - MONGODB_USERNAME=myuser
+      - MONGODB_PASSWORD=mypassword
+      - MONGODB_DATABASE=mydb
+      - MONGODB_ROOT_PASSWORD=myrootpassword
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_NAME=rs0
+      - MONGODB_REPLICA_SET_KEY=+FHkHFqJqIZyZFERVns5jqtMHM9aK9PyipHAR2xlpjA=
+
+    networks:
+      - my_network # Adicione o serviço à rede personalizada
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: bitnami/rabbitmq:latest
     container_name: rabbitmq
-    hostname: rabbitmq
-    volumes:
-      - /var/lib/rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
-    env_file:
-      - .env
+    environment:
+      - RABBITMQ_USERNAME=myuser
+      - RABBITMQ_PASSWORD=mypassword
+    networks:
+      - my_network # Adicione o serviço à rede personalizada
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=mongodb://myuser:mypassword@mongodb:27017/mydb
+      - RABBITMQ_URL=amqp://myuser:mypassword@rabbitmq:5672
+      - MAIL_USER=ac837395e2fb08
+      - MAIL_PASS=50e9ce809fc928
+      - MAIL_HOST=sandbox.smtp.mailtrap.io
+      - MAIL_PORT=2525
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - my_network # Adicione o serviço à rede personalizada
+
+networks:
+  my_network: # Defina o nome da rede personalizada
